@@ -58,7 +58,7 @@ Visualization Manager:
       Draw Behind: false
       Enabled: true
       Name: Map
-      Topic: /mapSlamOmatic
+      Topic: /map
       Unreliable: false
       Value: true
     - Class: rviz/Axes
@@ -71,7 +71,7 @@ Visualization Manager:
     - Alpha: 1
       Buffer Length: 1
       Class: rviz/Path
-      Color: 255; 85; 255
+      Color: 0; 180; 0
       Enabled: true
       Head Diameter: 0.30000001192092896
       Head Length: 0.20000000298023224
@@ -87,7 +87,7 @@ Visualization Manager:
       Radius: 0.029999999329447746
       Shaft Diameter: 0.10000000149011612
       Shaft Length: 0.10000000149011612
-      Topic: /pathSlamOmatic
+      Topic: /path
       Unreliable: false
       Value: true
   Enabled: true
@@ -125,8 +125,8 @@ Visualization Manager:
       Scale: 67.02864074707031
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz)
-      X: 3.326686382293701
-      Y: -5.371065139770508
+      X: 0.0
+      Y: 0.0
     Saved: ~
 Window Geometry:
   Displays:
