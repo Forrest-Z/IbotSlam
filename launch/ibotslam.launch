@@ -16,9 +16,9 @@
     <param name="topic_lidar"           value="/scan"/>
 
     <!-- Publisher Topic Names -->
-    <param name="topic_pose"            value="poseSlamOmatic"/>
-    <param name="topic_map"             value="mapSlamOmatic"/>
-    <param name="topic_path"            value="pathSlamOmatic"/>
+    <param name="topic_pose"            value="pose"/>
+    <param name="topic_map"             value="map"/>
+    <param name="topic_path"            value="path"/>
 
 
     <node pkg="ibotslam" type="ibotslam_node" name="IbotSlam"/>
