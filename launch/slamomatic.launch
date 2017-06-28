@@ -21,7 +21,7 @@
     <param name="topic_path"            value="pathSlamOmatic"/>
 
 
-    <node pkg="slamomatic" type="slamomatic_node" name="SlamOmatic"/>
-<node name="rviz" pkg="rviz" type="rviz" args="-d $(find slamomatic)/rviz/slamomatic.rviz" />
+    <node pkg="ibotslam" type="ibotslam_node" name="SlamOmatic"/>
+<node name="rviz" pkg="rviz" type="rviz" args="-d $(find ibotslam)/rviz/ibotslam.rviz" />
 
 </launch>

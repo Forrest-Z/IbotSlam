@@ -82,7 +82,7 @@ void UpdateSLAM(const sensor_msgs::LaserScan::Ptr& msg)
 int main(int argc, char **argv)
 {
   // Set up ROS.
-  ros::init(argc, argv, "slamomatic_node",1);
+  ros::init(argc, argv, "ibotslam_node",1);
   ros::NodeHandle n;
   br = new tf::TransformBroadcaster();
 

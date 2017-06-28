@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(slamomatic)
+project(ibotslam)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -129,7 +129,7 @@ include_directories(
 
 ## Declare a C++ executable
 ###      !!! EXECUTABLE, nécessite d'ajouter tous les CPP a la suite !!!
-add_executable(slamomatic_node generic_slam_2d_node.cpp
+add_executable(ibotslam_node generic_slam_2d_node.cpp
     src/lib_generic_slam/IGeneric2dMap.cpp
     src/lib_generic_slam/IGenericLocalizer.cpp
     src/lib_generic_slam/GenericSlam.tpp
@@ -156,7 +156,7 @@ add_executable(slamomatic_node generic_slam_2d_node.cpp
 
 ## Specify libraries to link a library or executable target against
 ###          !!! IMPORTANT !!!
-target_link_libraries(slamomatic_node
+target_link_libraries(ibotslam_node
     ${catkin_LIBRARIES}
     )
 
