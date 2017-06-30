@@ -2,7 +2,7 @@
 
     <!-- Map size / start point -->
     <param name="map_resolution"        value="0.020"/>
-    <param name="map_size"              value="4000"/>
+    <param name="map_size"              value="1000"/>
     <param name="map_threshold"         value="35"/>
     <param name="map_cost_width"        value="45"/>
     <param name="map_interval_search"   value="0.05"/>
@@ -22,6 +22,5 @@
 
 
     <node pkg="ibotslam" type="ibotslam_node" name="IbotSlam"/>
-<node name="rviz" pkg="rviz" type="rviz" args="-d $(find ibotslam)/rviz/ibotslam.rviz" />
 
 </launch>

@@ -13,7 +13,7 @@ LiDAR_Scan_2D Tools::convertRosScan2GenericLiDARScan(const sensor_msgs::LaserSca
     if(scan->ranges[i] == 0 || scan->ranges[i] >= INFINITY || scan->ranges[i] < 0.2f || scan->ranges[i] >= 100.0f)
       out.m_points[i] = Point2D();
     else  // Ajout du -X pour essayer d'inverser l'erreur de symétrie !!!
-      out.m_points[i] = Point2D(-scan->ranges[i] * cos(angle), scan->ranges[i] * sin(angle));
+      out.m_points[i] = Point2D(scan->ranges[i] * cos(angle), -scan->ranges[i] * sin(angle));
     angle += scan->angle_increment;
   }
 
