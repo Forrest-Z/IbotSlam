@@ -110,7 +110,7 @@ bool  service_cost_map(nav_msgs::GetMap::Request& request, nav_msgs::GetMap::Res
 int main(int argc, char **argv)
 {
   // Set up ROS.
-  ros::init(argc, argv, "ibotslam_node",1);
+  ros::init(argc, argv, "ibotslam_node");
   ros::NodeHandle n;
   br = new tf::TransformBroadcaster();
 

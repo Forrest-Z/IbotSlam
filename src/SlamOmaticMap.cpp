@@ -140,9 +140,7 @@ nav_msgs::OccupancyGrid SlamOmaticMap::getCost2OccupencyGrid() const
   cost.info.origin.position.z = 0;
   cost.data.resize(m_cost_map->globalsize());
 
-  //m_mutex_cost.lock();
   memcpy(cost.data.data(), m_cost_map->data(), m_cost_map->globalsize());
-  //m_mutex_cost.unlock();
 
   return cost;
 }
@@ -160,9 +158,7 @@ nav_msgs::OccupancyGrid SlamOmaticMap::getProb2OccupencyGrid() const
   prob.info.origin.position.z = 0;
   prob.data.resize(m_probability_map->globalsize());
 
-  //m_mutex_prob.lock();
   memcpy(prob.data.data(), m_probability_map->data(), m_probability_map->globalsize());
-  //m_mutex_prob.unlock();
 
   return prob;
 }

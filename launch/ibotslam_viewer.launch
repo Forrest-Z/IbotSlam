@@ -1,0 +1,27 @@
+<launch>
+
+    <!-- Map size / start point -->
+    <param name="map_resolution"        value="0.020"/>
+    <param name="map_size"              value="4000"/>
+    <param name="map_threshold"         value="35"/>
+    <param name="map_cost_width"        value="45"/>
+    <param name="map_interval_search"   value="0.05"/>
+    <param name="map_news_filter"       value="100.0"/>
+
+    <!-- Frame names -->
+    <param name="frame_map"             value="map"/>
+    <param name="frame_base_link"       value="base_link"/>
+
+    <!-- Suscriber Topic Names -->
+    <param name="topic_lidar"           value="/scan"/>
+
+    <!-- Publisher Topic Names -->
+    <param name="topic_pose"            value="pose"/>
+    <param name="topic_map"             value="map"/>
+    <param name="topic_path"            value="path"/>
+
+
+    <node pkg="ibotslam" type="ibotslam_node" name="IbotSlam"/>
+<node name="rviz" pkg="rviz" type="rviz" args="-d $(find ibotslam)/rviz/ibotslam.rviz" />
+
+</launch>

@@ -9,7 +9,6 @@
 
 #include "define.h"
 
-#include <mutex>
 
 
 class SlamOmaticMap : public IGeneric2dMap<uint8_t>
@@ -46,7 +45,6 @@ protected:
 
   bool                  m_first_update;
   uint8_t               m_seuil, m_maxcost;
-  mutable std::mutex    m_mutex_prob, m_mutex_cost;
   ProbabilityGridMap    *m_probability_map;
   CostMap              *m_cost_map;
 
