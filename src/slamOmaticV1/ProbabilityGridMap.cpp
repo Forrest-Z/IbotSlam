@@ -14,15 +14,15 @@ ProbabilityGridMap::ProbabilityGridMap(const ProbabilityGridMap &other)
   memcpy(m_map,other.m_map,m_globalSize);
 }
 
-void ProbabilityGridMap::razChange()
-{
-  m_change.clear();
-}
+//void ProbabilityGridMap::razChange()
+//{
+//  m_change.clear();
+//}
 
-std::vector<Point2D> *ProbabilityGridMap::getChange()
-{
-  return &m_change;
-}
+//std::vector<Point2D> *ProbabilityGridMap::getChange()
+//{
+//  return &m_change;
+//}
 
 ProbabilityGridMap::~ProbabilityGridMap() { }
 

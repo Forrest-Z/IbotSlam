@@ -16,6 +16,12 @@
 #define   TOPIC_MAP         "mapSlamOmatic"
 #define   TOPIC_PATH        "pathSlamOmatic"
 
+//    _______________________________________
+//    ::: Définition des noms de Services :::
+#define   SERVICE_PROBMAP   "slam_prob_map"
+#define   SERVICE_COSTMAP   "slam_cost_map"
+
+
 //    _________________________________
 //    ::: Configuration de la carte :::
 

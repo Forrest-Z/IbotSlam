@@ -27,7 +27,8 @@ public:
   virtual double resolution() const = 0;
 
   virtual void  update(const Pose2D& p, const LiDAR_Scan_2D& scan) = 0;
-  virtual nav_msgs::OccupancyGrid toRosOccupancyGrid() const = 0;
+  virtual nav_msgs::OccupancyGrid getCost2OccupencyGrid() const = 0;
+  virtual nav_msgs::OccupancyGrid getProb2OccupencyGrid() const = 0;
 
   virtual bool    save(const char* filename) = 0;
   virtual bool    load(const char* filename) = 0;
