@@ -21,13 +21,8 @@ CostMap::CostMap(const ProbabilityGridMap &prob, const uint8_t costmax, const ui
       if(prob.at(i) > _seuil)
         obstacles.push_back(i);
 
-    //std::////cout << "Avant computeALL" << std::endl;
-    //unsigned long int t1 = rOc_Timestamp::SystemElapsedTime_ms();
     computeALL(&obstacles);
     obstacles.clear();
-    //unsigned long int t2 = rOc_Timestamp::SystemElapsedTime_ms();
-    // cout << "tmp de traitement " << t2 - t1 << "ms" << std::endl;
-
 }
 
 CostMap::~CostMap()
@@ -55,7 +50,6 @@ void CostMap::computeALL(const std::vector<unsigned int>* obstacles) {
         if(currentCost > m_realMax)
             m_realMax = currentCost;
         const int s(currentId.size());
-        #pragma omp parallel for
         for(int i = 0; i < s; i++)
         {
             centerId = currentId[i];

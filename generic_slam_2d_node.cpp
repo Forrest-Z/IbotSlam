@@ -29,6 +29,7 @@ void UpdateSLAM(const sensor_msgs::LaserScan::Ptr& msg)
   static std::string frame_map;
   static std::string frame_base;
   static ros::Rate loop_rate_map(1), loop_rate_path(1);
+  static geometry_msgs::PoseStamped pose_stamped;
 
   bool first = true;
   if(first)
@@ -52,6 +53,8 @@ void UpdateSLAM(const sensor_msgs::LaserScan::Ptr& msg)
       freq = 1.0f;
     loop_rate_path = ros::Rate(freq);
     loop_rate_path.reset();
+
+    pose_stamped.header.frame_id = frame_base;
   }
   //  _________________________
   //  ::: Update SLAM State :::
@@ -67,9 +70,7 @@ void UpdateSLAM(const sensor_msgs::LaserScan::Ptr& msg)
   ros_pose.theta = pose.theta;
   pubPose.publish(ros_pose);
 
-  geometry_msgs::PoseStamped pose_stamped;
   pose_stamped.header.stamp = ros::Time::now();
-  pose_stamped.header.frame_id = frame_base;
   pose_stamped.pose.position.x = pose.x;
   pose_stamped.pose.position.y = -pose.y;
   pose_stamped.pose.orientation = Tools::toQuaternion(0.0f,0.0f,pose.theta);

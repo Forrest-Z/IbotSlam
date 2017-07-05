@@ -79,22 +79,13 @@ void SlamOmaticMap::update(const Pose2D &p, const LiDAR_Scan_2D &scan)
   // ___________________________
   // ::: MaJ Probability Map :::
   double _cos = cos(p.theta), _sin = sin(p.theta);
-  double dist = 0.0f, seuil = SEUIL_DIST_CARTO*SEUIL_DIST_CARTO;
-
-  //double cost = 0.0f;
 
   for(i = 0; i < size; i++)
   {
     if(scan.m_points[i].x == 0 && scan.m_points[i].y == 0) continue;
 
-    dist = scan.m_points[i].x * scan.m_points[i].x + scan.m_points[i].y * scan.m_points[i].y;
-    if(dist > seuil) {
-      loc_scan_pix.m_points[i].x = 0;
-      loc_scan_pix.m_points[i].y = 0;
-    } else {
-      loc_scan_pix.m_points[i].x = (int)((_cos*scan.m_points[i].x - _sin*scan.m_points[i].y + p.x) / resolution());
-      loc_scan_pix.m_points[i].y = (int)((_sin*scan.m_points[i].x + _cos*scan.m_points[i].y + p.y) / resolution());
-    }
+    loc_scan_pix.m_points[i].x = (int)((_cos*scan.m_points[i].x - _sin*scan.m_points[i].y + p.x) / resolution());
+    loc_scan_pix.m_points[i].y = (int)((_sin*scan.m_points[i].x + _cos*scan.m_points[i].y + p.y) / resolution());
 
   }
 
@@ -102,20 +93,13 @@ void SlamOmaticMap::update(const Pose2D &p, const LiDAR_Scan_2D &scan)
   it = std::unique (loc_scan_pix.m_points.begin(), loc_scan_pix.m_points.end());
   loc_scan_pix.m_points.resize( std::distance(loc_scan_pix.m_points.begin(),it) );
 
-  //cout << "AVANT : " << scan.size() << " / APRES : " << loc_scan_pix.size() << endl;
 
-  //cout << "Av1" << endl;
-  //m_probability_map->razChange();
-  //cout << "Ap1" << endl;
   for(i = 0; i < loc_scan_pix.size(); i++)
     if(loc_scan_pix.m_points[i].x != 0 && loc_scan_pix.m_points[i].y != 0)
       m_probability_map->pushLine(pix_x, pix_y, loc_scan_pix.m_points[i].x, loc_scan_pix.m_points[i].y,m_first_update);
-        //at(loc_scan_pix.m_points[i].x,loc_scan_pix.m_points[i].y) == 50 );
+                                  //at(loc_scan_pix.m_points[i].x,loc_scan_pix.m_points[i].y) == 50 );
 
   m_first_update = false;
-
-  //m_mutex_prob.unlock();
-  //m_mutex_cost.lock();
 
   // ____________________
   // ::: MaJ Cost Map :::
@@ -123,23 +107,24 @@ void SlamOmaticMap::update(const Pose2D &p, const LiDAR_Scan_2D &scan)
   delete m_cost_map;
   m_cost_map = new CostMap(*m_probability_map,m_maxcost,m_seuil);
 
-  //m_mutex_cost.unlock();
-
 }
 
 nav_msgs::OccupancyGrid SlamOmaticMap::getCost2OccupencyGrid() const
 {
-  nav_msgs::OccupancyGrid cost;
-  cost.header.stamp = ros::Time::now();
-  cost.header.frame_id = "map";
-  cost.info.height = m_cost_map->size();
-  cost.info.width = m_cost_map->size();
-  cost.info.resolution = m_cost_map->resolutionMpPix();
-  cost.info.origin.position.x = -(m_cost_map->size()*m_cost_map->resolutionMpPix())/2.0;
-  cost.info.origin.position.y = -(m_cost_map->size()*m_cost_map->resolutionMpPix())/2.0;
-  cost.info.origin.position.z = 0;
-  cost.data.resize(m_cost_map->globalsize());
+  static nav_msgs::OccupancyGrid cost;
+  if(cost.info.width != m_cost_map->size())
+  {
+    cost.header.frame_id = "map";
+    cost.info.height = m_cost_map->size();
+    cost.info.width = m_cost_map->size();
+    cost.info.resolution = m_cost_map->resolutionMpPix();
+    cost.info.origin.position.x = -(m_cost_map->size()*m_cost_map->resolutionMpPix())/2.0;
+    cost.info.origin.position.y = -(m_cost_map->size()*m_cost_map->resolutionMpPix())/2.0;
+    cost.info.origin.position.z = 0;
+    cost.data.resize(m_cost_map->globalsize());
+  }
 
+  cost.header.stamp = ros::Time::now();
   memcpy(cost.data.data(), m_cost_map->data(), m_cost_map->globalsize());
 
   return cost;
@@ -147,17 +132,21 @@ nav_msgs::OccupancyGrid SlamOmaticMap::getCost2OccupencyGrid() const
 
 nav_msgs::OccupancyGrid SlamOmaticMap::getProb2OccupencyGrid() const
 {
-  nav_msgs::OccupancyGrid prob;
-  prob.header.stamp = ros::Time::now();
-  prob.header.frame_id = "map";
-  prob.info.height = m_probability_map->size();
-  prob.info.width = m_probability_map->size();
-  prob.info.resolution = m_probability_map->resolutionMpPix();
-  prob.info.origin.position.x = -(m_probability_map->size()*m_probability_map->resolutionMpPix())/2.0;
-  prob.info.origin.position.y = -(m_probability_map->size()*m_probability_map->resolutionMpPix())/2.0;
-  prob.info.origin.position.z = 0;
-  prob.data.resize(m_probability_map->globalsize());
+  static nav_msgs::OccupancyGrid prob;
 
+  if(prob.info.width != m_probability_map->size())
+  {
+    prob.header.frame_id = "map";
+    prob.info.height = m_probability_map->size();
+    prob.info.width = m_probability_map->size();
+    prob.info.resolution = m_probability_map->resolutionMpPix();
+    prob.info.origin.position.x = -(m_probability_map->size()*m_probability_map->resolutionMpPix())/2.0;
+    prob.info.origin.position.y = -(m_probability_map->size()*m_probability_map->resolutionMpPix())/2.0;
+    prob.info.origin.position.z = 0;
+    prob.data.resize(m_probability_map->globalsize());
+  }
+
+  prob.header.stamp = ros::Time::now();
   memcpy(prob.data.data(), m_probability_map->data(), m_probability_map->globalsize());
 
   return prob;

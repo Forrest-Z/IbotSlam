@@ -61,7 +61,7 @@ Pose2D SlamOmatic::update(const sensor_msgs::LaserScan::Ptr &msg)
   //scan = Tools::filterByDistance(scan,SEUIL_DISTANCE);
 
   m_pose = m_slam->update(m_estimate_pose,scan);
-  m_estimate_pose = m_pose;
+  m_estimate_pose = m_pose; // Modify it if a continious tracking system is added (like EKF...)
 
   return m_pose;
 }

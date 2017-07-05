@@ -14,20 +14,20 @@ ProbabilityGridMap::ProbabilityGridMap(const ProbabilityGridMap &other)
   memcpy(m_map,other.m_map,m_globalSize);
 }
 
-//void ProbabilityGridMap::razChange()
-//{
-//  m_change.clear();
-//}
-
-//std::vector<Point2D> *ProbabilityGridMap::getChange()
-//{
-//  return &m_change;
-//}
-
 ProbabilityGridMap::~ProbabilityGridMap() { }
 
 void ProbabilityGridMap::pushLine(const int x1, const int y1, const int x2, const int y2, const bool force, const bool isFree) {
+  if(isFree)
+    pushFreeLine(x1,y1,x2,y2,force);
+//else
+//  #TODO make pushNotFreeLine ...
+}
+
+void ProbabilityGridMap::pushFreeLine(const int x1, const int y1, const int x2, const int y2, const bool force)
+{
   int _x1 = x1, _x2=x2, _y1=y1, _y2=y2;
+  unsigned int loc_id;
+  uint8_t val;
 
   bool steep = abs(_y2-_y1) > abs(_x2-_x1);
 
@@ -51,8 +51,6 @@ void ProbabilityGridMap::pushLine(const int x1, const int y1, const int x2, cons
   const int maxX = (int)_x2;
   int X=0,Y=0;
 
-  // TODO ON A ENCORE UNE BUG DANS CETTE BOUCLE CI !!!
-  //cout << "Z1"<<endl;
   for(int x=_x1; x<maxX; x++)
   {
     if(steep) {
@@ -61,21 +59,13 @@ void ProbabilityGridMap::pushLine(const int x1, const int y1, const int x2, cons
       X=x; Y=y;
     }
 
-    uint8_t lastval = at(X,Y);
+    loc_id = idAt(X,Y);
+    val = at(loc_id);
 
-    //    bool avant = lastval > 50, apres;
-    //if(lastval <= 95) { // || lastval < 5)  {
-    if(true) {
-      static uint8_t seuil_haut = 100 - PROBA_DECREMENT, seuil_bas = PROBA_DECREMENT;
-      if(isFree) {
-        lastval <= seuil_bas ? lastval=0 : lastval-=PROBA_DECREMENT;
-      } else {
-        lastval <= seuil_haut ? lastval=100 : lastval+=PROBA_DECREMENT;
-      }
-      //    apres = lastval > 50;
-      //    if(avant != apres) m_change.push_back(Point2D(X,Y));
-      set(X,Y,lastval);
-    }
+    static uint8_t seuil_bas = PROBA_DECREMENT;
+    val <= seuil_bas ? val=0 : val-=PROBA_DECREMENT;
+
+    at(loc_id) = val;
 
     error -= dy;
     if(error < 0)
@@ -84,28 +74,17 @@ void ProbabilityGridMap::pushLine(const int x1, const int y1, const int x2, cons
       error += dx;
     }
   }
-  //cout << "Z2"<<endl;
+
   if(force) {
     //cout << "Z21"<<endl;
-    set(x2,y2,isFree?100:0);
+    set(x2,y2,100);
   }
   else
   {
-    //cout << "Z22"<<endl;
-    uint8_t lastval = at(x2,y2);
+    val = at(x2,y2);
 
-    static uint8_t seuil_haut = 100 - PROBA_INCREMENT, seuil_bas = PROBA_INCREMENT;
-
-    if(isFree) {
-      lastval >= seuil_haut ? lastval=100 : lastval += PROBA_INCREMENT;
-    } else {
-      lastval <= seuil_bas  ? lastval=0   : lastval -= PROBA_INCREMENT;
-    }
-    //    if(isFree) {
-    //      lastval >=92 ? lastval=100 : lastval+=8;
-    //    } else {
-    //      lastval <= 8 ? lastval=0 : lastval-=8;
-    //    }
-    set(x2,y2,lastval);
+    static uint8_t seuil_haut = 100 - PROBA_INCREMENT;
+    val = (val >= seuil_haut ? val=100 : val += PROBA_INCREMENT);
+    at(x2,y2) = val;
   }
 }
