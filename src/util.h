@@ -14,7 +14,7 @@
 namespace utils {
 
 // To send transformation between map and base_link :
-void      sendTransformPose2d(tf::TransformBroadcaster& broadcaster, const Pose2D  &pose);
+void      sendTransformPose2d(tf::TransformBroadcaster& broadcaster, const Pose2D  &pose, const ros::Time& stamp, const std::string& frame_map, const std::string& frame_base);
 
 }
 

@@ -9,7 +9,13 @@
 class GenericFilter
 {
 public:
-  virtual LiDAR_Scan_2D   filter(const Pose2D& lastPosePix, const LiDAR_Scan_2D& scan) const = 0;
+  /**
+   * @brief filter  Function to delete some LiDAR Scan points for the localization part
+   * @param lastPose  the last estimate pose known
+   * @param scan      the current LiDAR scan that will be filtred
+   * @return          the filtred LiDAR scan
+   */
+  virtual LiDAR_Scan_2D   filter(const Pose2D& lastPose, const LiDAR_Scan_2D& scan) const = 0;
 };
 
 #endif // GENERICFILTER_H

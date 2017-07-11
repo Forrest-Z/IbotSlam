@@ -21,16 +21,26 @@ class SlamOmatic
 public:
   SlamOmatic();
 
+  /**
+   * @brief update function to iterate the SLAM state using a new LiDAR data message :
+   * @param msg the LiDAR data from ROS
+   * @return the new pose estimated
+   */
   Pose2D    update(const sensor_msgs::LaserScan::Ptr& msg);
 
-
-//  Getter :
+  /**
+   * @brief map getter on the global map (contains prob and cost map)
+   * @return the global map
+   */
   SlamOmaticMap *map() const;
+
+  /**
+   * @brief pose getter on the pose
+   * @return the last estimate pose in meters
+   */
   Pose2D pose() const;
 
 protected:
-  double                  m_last_t_in_sec;
-
   //    __________________
   //    ::: PARAMETERS :::
   double                  m_map_resolution;
@@ -44,18 +54,14 @@ protected:
 
   //    ____________
   //    ::: SLAM :::
+  // > Pointer to store the global map :
   SlamOmaticMap*          m_map;
+  // > Pointer to store the global localizer
   SlamOmaticLocalizer*    m_localizer;
+  // > Pointer to store the global SLAM algorithm
   GenericSlam<uint8_t>*   m_slam;
+  // > The global pose in meters :
   Pose2D                  m_pose;
-
-  //    ______________
-  //    ::: KALMAN :::
-  Pose2D                  m_estimate_pose;
-
-
-
-
 };
 
 #endif // SLAMOMATIC_H

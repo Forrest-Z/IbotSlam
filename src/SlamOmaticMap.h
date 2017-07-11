@@ -18,6 +18,7 @@ public:
 
   // IGeneric2dMap interface
 public:
+  // Getter and setter functions in probmap from XY value or directly from array pose id :
   virtual uint8_t at(const int x, const int y) const;
   virtual uint8_t &at(const int x, const int y);
   virtual uint8_t at(const Pose2D &p) const;
@@ -25,29 +26,35 @@ public:
   virtual uint8_t at(const Point2D &p) const;
   virtual uint8_t &at(const Point2D &p);
 
+  // Getter and setter functions in costmap from XY value or directly from array pose id :
   virtual uint8_t costAt(const int x, const int y) const;
   virtual uint8_t costAt(const Pose2D &p) const;
   virtual uint8_t costAt(const Point2D &p) const;
   virtual uint8_t costMax() const;
 
+  // Getter for resolution's map :
   virtual double resolution() const;
 
+  // Function to update the maps using the current pose and current LiDAR data scan :
   virtual void update(const Pose2D &p, const LiDAR_Scan_2D &scan);
 
+  // Getter on CostMap, convert array to ros::OccupencyGrid :
   virtual nav_msgs::OccupancyGrid getCost2OccupencyGrid() const;
+
+  // Getter on ProbMap, convert array to ros::OccupencyGrid :
   virtual nav_msgs::OccupancyGrid getProb2OccupencyGrid() const;
 
-  virtual bool save(const char *filename);
-  virtual bool load(const char *filename);
+  //  Functions to save and load the maps :
+  //  virtual bool save(const char *filename);
+  //  virtual bool load(const char *filename);
 
 protected:
-  FILE*                 m_file;
-
-  bool                  m_first_update;
+  // parameters for configuring maps :
   uint8_t               m_seuil, m_maxcost;
+  // the probabilistic map object :
   ProbabilityGridMap    *m_probability_map;
-  CostMap              *m_cost_map;
-
+  // the cost map object :
+  CostMap               *m_cost_map;
 };
 
 #endif // SLAMOMATICMAP_H

@@ -30,6 +30,11 @@ CostMap::~CostMap()
 
 }
 
+/**
+ * @brief CostMap::computeALL This is the slower function is the actual SLAM !
+ * It is necessary to modify it by using other approach like LUT
+ * @param obstacles a vector with the coordinates of all the obstacles
+ */
 void CostMap::computeALL(const std::vector<unsigned int>* obstacles) {
     std::vector<unsigned int> currentId = *obstacles, nextId;
     uint8_t currentCost = 1;
