@@ -6,7 +6,7 @@
 #include <sensor_msgs/LaserScan.h>
 #include <geometry_msgs/Pose2D.h>
 #include <nav_msgs/OccupancyGrid.h>
-#include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <nav_msgs/Path.h>
 #include <nav_msgs/GetMap.h>
 #include <list>
@@ -42,7 +42,9 @@ void UpdateSLAM(const sensor_msgs::LaserScan::Ptr& msg)
   //  > Framerate in Hz to send map and path
   static ros::Rate loop_rate_map(1), loop_rate_path(1);
   //  > PoseStamped initialized
+  static geometry_msgs::PoseWithCovarianceStamped pose_stamped_with_cov;
   static geometry_msgs::PoseStamped pose_stamped;
+
 
   // At the first iteration, initialisation must be made :
   static bool first = true;
@@ -58,6 +60,7 @@ void UpdateSLAM(const sensor_msgs::LaserScan::Ptr& msg)
 
     //  > Get parameter named "frame_base_link" :
     nh_private.param<std::string>("frame_base_link", frame_base, FRAME_BASE);
+    pose_stamped_with_cov.header.frame_id = frame_map;
     pose_stamped.header.frame_id = frame_base;
 
     double freq;
@@ -74,24 +77,25 @@ void UpdateSLAM(const sensor_msgs::LaserScan::Ptr& msg)
   }
 
   //  ::: Update SLAM State :::
-  Pose2D pose = slamOmatic->update(msg);
+  Pose2D p = slamOmatic->update(msg);
 
   //  ::: Send Pose transform into frame Map and frame Base Link  :::
-  utils::sendTransformPose2d(*br, pose, msg->header.stamp, frame_map, frame_base);
+  utils::sendTransformPose2d(*br, p, msg->header.stamp, frame_map, frame_base);
+
+  pose_stamped.pose.position.x = p.x;
+  pose_stamped.pose.position.y = -p.y;
+  pose_stamped.pose.orientation = Tools::toQuaternion(0.0f,0.0f,p.theta);
 
   // Create a data object message to send pose using Topic (for debug, other nodes could be use transform broadcaster)
-  geometry_msgs::Pose2D ros_pose;
-  ros_pose.x = pose.x;
-  ros_pose.y = pose.y;
-  ros_pose.theta = pose.theta;
-  pubPose.publish(ros_pose);
+  pose_stamped_with_cov.header.stamp = msg->header.stamp;
+  pose_stamped_with_cov.pose.pose.position.x = p.x;
+  pose_stamped_with_cov.pose.pose.position.y = -p.y;
+  pose_stamped_with_cov.pose.pose.orientation = Tools::toQuaternion(0.0f,0.0f,-p.theta);
+  for(unsigned int i = 0; i < 36; i++)
+    pose_stamped_with_cov.pose.covariance[i] = 0.0f;
 
-  //  Create a data object to store XYT data into the path.
-  pose_stamped.header.stamp = ros::Time::now();
-  pose_stamped.pose.position.x = pose.x;
-  pose_stamped.pose.position.y = -pose.y;
-  //  > In ROS, Euler angles are stored like Quaternion, we use toQuaternion to convert Euler angles to Quaternion ROS object
-  pose_stamped.pose.orientation = Tools::toQuaternion(0.0f,0.0f,pose.theta);
+  pubPose.publish(pose_stamped_with_cov);
+
 
   // Put PoseStamped object into the global path object :
   path.poses.push_back(pose_stamped);
@@ -154,7 +158,7 @@ int main(int argc, char **argv)
 
   // Get parameter name topic_pose from parameter server and create this topic :
   nh_private.param<std::string>("topic_pose", name, TOPIC_POSE);
-  pubPose = n.advertise<geometry_msgs::Pose2D>(name, 1);
+  pubPose = n.advertise<geometry_msgs::PoseWithCovarianceStamped>(name, 1);
 
   // Get parameter name topic_map from parameter server and create this topic :
   nh_private.param<std::string>("topic_map", name, TOPIC_MAP);
